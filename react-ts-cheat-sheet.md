@@ -288,3 +288,53 @@ const Input = (props: InputProps) => {
   );
 };
 ```
+
+### Styles as Props
+
+```
+App:
+
+<ContainerStyles styles={{ border: '1px solid coral', padding: '1rem' }} />
+
+```
+
+```
+type ContainerStylesProps = {
+  styles: React.CSSProperties;
+};
+const ContainerStyles = (props: ContainerStylesProps) => {
+  return <div style={props.styles}>Container wit styles as props</div>;
+};
+```
+
+### Props Tips
+
+1. Destructing props: ( { name, age } : PersonProps)
+
+2. Export/Import
+
+```
+Person.types.ts
+
+export type PersonProps = {
+  name: string;
+  age: number;
+}
+
+import {PersonProps} from /....
+
+```
+
+3. Reusing types
+
+```
+export type Name = {
+  firstName: string;
+  lastName: string
+}
+
+export PersonProps = {
+  name: Name;
+  age: number;
+}
+```
