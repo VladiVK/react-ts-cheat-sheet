@@ -338,3 +338,68 @@ export PersonProps = {
   age: number;
 }
 ```
+
+## Typing Hooks
+
+---
+
+## Typing useState hook
+
+- remember: if we have an object `useState< Person | null >(null)`
+
+we should use optional chaining operator `person?.name`
+
+because our state can be also `null` !!!
+
+```
+type UserAuth = {
+  name: string;
+  email: string;
+};
+const User = () => {
+  const [user, setUser] = useState< UserAuth | null >(null);
+  const handleLogin = () => {
+    setUser({
+      name: 'Bob',
+      email: 'bob@gmail.com',
+    });
+  };
+  const handleLogout = () => setUser(null);
+  return (
+    <div>
+      <button onClick={handleLogin}>Log In</button>
+      <button onClick={handleLogout}>Log Out</button>
+
+      <h3>User name is - {user?.name}</h3>
+      <h3>User email is - {user?.email}</h3>
+    </div>
+  );
+};
+
+```
+
+### - useState Type Assertion
+
+If we are 100% sure that our data will be correct
+
+we can use `{} as UserAuth`
+
+and do not check object with optional chaining
+
+```
+const [user, setUser] = useState< UserAuth >( {} as UserAuth );
+  const handleLogin = () => {
+    setUser({
+      name: 'Bob',
+      email: 'bob@gmail.com',
+    });
+  };
+
+  return (
+    <div>
+      <button onClick={handleLogin}>Log In</button>
+      <h3>User name is - {user.name}</h3>
+      <h3>User email is - {user.email}</h3>
+    </div>
+  );
+```
