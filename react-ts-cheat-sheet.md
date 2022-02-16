@@ -190,3 +190,101 @@ const Oscar = (props: OscarProps) => {
   return <div>{props.children}</div>;
 };
 ```
+
+### Event Props
+
+```
+App:
+
+<Button handleClick={() => console.log('handleClick')} />
+
+```
+
+```
+type ButtonProps = {
+  handleClick: () => void;
+}
+
+const Button = (props: ButtonProps) => {
+  return <button onClick={props.handleClick}>Button</button>;
+}
+```
+
+Example with Event
+
+```
+App:
+
+<Button handleClick={(e) => console.log('handleClick', e.target)} />
+```
+
+```
+type ButtonProps = {
+  handleClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+};
+const Button = (props: ButtonProps) => {
+  return <button onClick={props.handleClick}>Button</button>;
+};
+```
+
+Example with Event & id
+
+```
+App:
+
+<Button handleClick={(e, id) => console.log('handleClick', e.target, id)} />
+
+
+```
+
+```
+type ButtonProps = {
+  handleClick: (e: React.MouseEvent<HTMLButtonElement>, id: number) => void;
+};
+const Button = (props: ButtonProps) => {
+  return <button onClick={(e) => props.handleClick(e, 1)}>Button</button>;
+};
+```
+
+onChange Event:
+
+```
+App:
+
+<Input value='' handleChange={(e) => console.log(e)} />
+
+```
+
+Variant with props as function
+
+```
+type InputProps = {
+  value: string;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
+const Input = (props: InputProps) => {
+  return (
+  <input type='text' value={props.value} onChange={props.handleChange} />
+
+  );
+};
+
+```
+
+Varian with function inside component
+
+```
+type InputProps = {
+  value: string;
+};
+const Input = (props: InputProps) => {
+  const handleOnchangeEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e);
+  };
+
+  return (
+
+    <input type='text' value={props.value} onChange={handleOnchangeEvent} />
+  );
+};
+```
