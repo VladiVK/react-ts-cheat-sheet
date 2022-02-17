@@ -403,3 +403,59 @@ const [user, setUser] = useState< UserAuth >( {} as UserAuth );
     </div>
   );
 ```
+
+### - useReducer Type Assertion
+
+- we can restrict types by interconection between types
+
+```
+App:
+<Counter />
+```
+
+```
+type CounterState = {
+  count: number;
+};
+type UpdateAction = {
+  type: 'increment' | 'decrement';
+  payload: number;
+};
+type ResetAction = {
+  type: 'reset';
+};
+type CounterAction = UpdateAction | ResetAction;
+
+const initialSate = { count: 0 };
+
+function reducer(state: CounterState, action: CounterAction) {
+  switch (action.type) {
+    case 'increment':
+      return { count: state.count + action.payload };
+    case 'decrement':
+      return { count: state.count - action.payload };
+    case 'reset':
+      return initialSate;
+
+    default:
+      return state;
+  }
+}
+
+const Counter = () => {
+  const [state, dispatch] = useReducer(reducer, initialSate);
+  return (
+    <>
+      <h2>Count: {state.count}</h2>
+      <button onClick={() => dispatch({ type: 'increment', payload: 10 })}>
+        increment
+      </button>
+      <button onClick={() => dispatch({ type: 'decrement', payload: 10 })}>
+        decrement
+      </button>
+      <button onClick={() => dispatch({ type: 'reset' })}>reset</button>
+    </>
+  );
+};
+
+```
