@@ -459,3 +459,182 @@ const Counter = () => {
 };
 
 ```
+
+### - Context API
+
+```
+App:
+
+<ThemeContextprovider>
+  <Box />
+</ThemeContextprovider>
+
+```
+
+```
+theme.ts
+
+export const theme = {
+  primary: {
+    main: '#3f51b5',
+    text: '#fff',
+  },
+  secondary: {
+    main: '#f50057',
+    text: '#fff',
+  },
+};
+
+```
+
+```
+ThemeContext.tsx
+
+import { createContext } from 'react';
+import { theme } from './theme';
+
+type ThemeContextProviderprops = {
+  children: React.ReactNode;
+};
+export const ThemeContext = createContext(theme);
+
+export const ThemeContextprovider = (props: ThemeContextProviderprops) => {
+  return (
+    <ThemeContext.Provider value={theme}>
+      {props.children}
+    </ThemeContext.Provider>
+  );
+};
+
+```
+
+```
+<Box />
+
+import React, { useContext } from 'react';
+import { ThemeContext } from './ThemeContext';
+
+const Box = () => {
+  const theme = useContext(ThemeContext);
+  return (
+    <div
+      style={{
+        backgroundColor: theme.secondary.main,
+        color: theme.secondary.text,
+      }}
+    >
+      Box
+    </div>
+  );
+};
+
+
+```
+
+- Variation with uknown state
+
+```
+App:
+
+  <UserContextProvider>
+    <User />
+  </UserContextProvider>
+```
+
+```
+import React, { useState, createContext, ReactNode } from 'react';
+
+export type UserAuth = {
+  name: string;
+  email: string;
+};
+
+type UserContextType = {
+  user: UserAuth | null;
+  setuser: React.Dispatch<React.SetStateAction<UserAuth | null>>;
+};
+
+type UserContextProviderProps = {
+  children: ReactNode;
+};
+
+// if do not know the initial value we set "null"
+export const UserContext = createContext<UserContextType | null>(null);
+
+export const UserContextProvider = ({ children }: UserContextProviderProps) => {
+  const [user, setuser] = useState<UserAuth | null>(null);
+  return (
+    <UserContext.Provider value={{ user, setuser }}>
+      {children}
+    </UserContext.Provider>
+  );
+};
+
+```
+
+```
+import React, { useContext } from 'react';
+import { UserContext } from './UserContext';
+
+const User = () => {
+  const userContext = useContext(UserContext);
+  const handleLogin = () => {
+    if (userContext) {
+      userContext.setuser({
+        name: 'Bob',
+        email: 'bob@gmail.com',
+      });
+    }
+  };
+  const handleLogout = () => {
+    if (userContext) {
+      userContext.setuser(null);
+    }
+  };
+  return (
+    <div>
+      <button onClick={handleLogin}>login</button>
+      <button onClick={handleLogout}>logout</button>
+      <h3>User name is {userContext?.user?.name}</h3>
+      <h3>User email is {userContext?.user?.email}</h3>
+    </div>
+  );
+};
+```
+
+We always check: if (userContext) ...
+
+And check: {userContext?.user?.name}
+
+All problems are because we specify null as initial value !!!
+
+But we can (very often pattern !!!) use next variant !!!
+
+```
+UserContext.tsx
+
+export const UserContext = createContext({} as UserContextType);
+
+```
+
+```
+const User = () => {
+  const { user, setuser } = useContext(UserContext);
+  const handleLogin = () => {
+    setuser({
+      name: 'Bob',
+      email: 'bob@gmail.com',
+    });
+  };
+  const handleLogout = () => setuser(null);
+
+  return (
+    <div>
+      <button onClick={handleLogin}>login</button>
+      <button onClick={handleLogout}>logout</button>
+      <h3>User name is {user?.name}</h3>
+      <h3>User email is {user?.email}</h3>
+    </div>
+  );
+};
+```
