@@ -638,3 +638,85 @@ const User = () => {
   );
 };
 ```
+
+### - useRef hook
+
+We use `useRef` hook in 2 variants:
+
+1. when we just read value - specify DOM element type like `HTMLInputElement`
+
+2. if we deal with mutable value - specify correct types like `useRef<number | null>(null)`
+
+```
+import React, { useRef, useEffect } from 'react';
+
+const DomRef = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  return (
+    <div>
+      <input type='text' ref={inputRef} />
+    </div>
+  );
+
+};
+
+export default DomRef;
+```
+
+If we are sure that our reference is never be null,
+
+we can add after `null` an exclamaition sign `null!`
+
+This let us use `focus() `without optional chaining
+
+```
+ const inputRef = useRef<HTMLInputElement>(null!);
+
+useEffect(() => {
+    inputRef.current.focus();
+  }, []);
+
+
+
+```
+
+IMPORTANT !!! Use word `window`:
+
+`window.setInterval` and `window.clearInterval`
+
+```
+import { useState, useRef, useEffect } from 'react';
+
+const MutableRef = () => {
+  const [timer, setTimer] = useState(0);
+  const intervalRef = useRef<number | null>(null);
+
+  const stopTimer = () => {
+
+    // we use `null` so we need check value !!!
+
+    if (intervalRef.current) window.clearInterval(intervalRef.current);
+  };
+
+  useEffect(() => {
+    intervalRef.current = window.setInterval(() => {
+      setTimer((prev) => prev + 1);
+    }, 1000);
+
+    return () => {
+      stopTimer();
+    };
+  }, []);
+  return (
+    <div>
+      MutableRef: Timer hook: {timer}
+      <button onClick={() => stopTimer()}>stop timer</button>
+    </div>
+  );
+};
+```
