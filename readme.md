@@ -773,3 +773,57 @@ If we do not have state, we just miss that:
 ```
 export default class CounterClass extends Component< CounterProps > { }
 ```
+
+### - Component as Prop
+
+If we need to put component only - use `React.ComponentType`
+
+If we need to put component with props - use `React.ComponentType< MyPropsType >`
+
+Details see below:
+
+```
+App:
+
+ <Private isLoggedIn={true} component={Profile} />
+```
+
+```
+import React from 'react';
+
+const Login = () => {
+  return <div>Please login to continue! </div>;
+};
+
+export default Login;
+```
+
+```
+import React from 'react';
+
+export type ProfileProps = {
+  name: string;
+};
+
+const Profile = ({ name }: ProfileProps) => {
+  return <div>Private Profile Component. Name is {name}</div>;
+};
+
+```
+
+```
+import Login from './Login';
+import { ProfileProps } from './Profile';
+
+type PrivateProps = {
+  isLoggedIn: boolean;
+  component: React.ComponentType<ProfileProps>;
+};
+
+// just rename with destruction {component: Component}
+
+const Private = ({ isLoggedIn, component: Component }: PrivateProps) => {
+  return isLoggedIn ? <Component name='Louis' /> : <Login />;
+};
+
+```
