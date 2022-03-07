@@ -720,3 +720,56 @@ const MutableRef = () => {
   );
 };
 ```
+
+### - Class component
+
+```
+App:
+
+<CounterClass message='Counter value is: '/>
+
+```
+
+```
+import React, { Component } from 'react';
+
+type CounterProps = {
+  message: string;
+};
+type CounterState = {
+  count: number;
+};
+
+export default class CounterClass extends Component<CounterProps, CounterState> {
+
+  state = {
+    count: 0,
+  };
+
+  handleClick = () => {
+    this.setState((prevState) => {
+      return { count: prevState.count + 1 };
+    });
+  };
+  render() {
+    return (
+      <div>
+        <button onClick={this.handleClick}>increment</button>
+        {this.props.message} {this.state.count}
+      </div>
+    );
+  }
+}
+```
+
+If we do not have props, we just put an empty object:
+
+```
+export default class CounterClass extends Component<{}, CounterState> {
+```
+
+If we do not have state, we just miss that:
+
+```
+export default class CounterClass extends Component< CounterProps > { }
+```
