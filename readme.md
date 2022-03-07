@@ -774,7 +774,7 @@ If we do not have state, we just miss that:
 export default class CounterClass extends Component< CounterProps > { }
 ```
 
-### - Component as Prop
+## Component as Prop
 
 If we need to put component only - use `React.ComponentType`
 
@@ -824,6 +824,96 @@ type PrivateProps = {
 
 const Private = ({ isLoggedIn, component: Component }: PrivateProps) => {
   return isLoggedIn ? <Component name='Louis' /> : <Login />;
+};
+
+```
+
+## Generics
+
+Let us avoid duplication
+
+```
+App:
+
+<List items={['Louis', 'Bob', 'Homer']}
+      onClick={(value) => console.log(value)}
+/>
+
+<List items={[1, 2, 3]} onClick={(value) => console.log(value)} />
+
+```
+
+```
+type ListProps<T> = {
+  items: T[];
+  onClick: (value: T) => void;
+};
+
+const List = <T extends string | number>({ items, onClick }: ListProps<T>) => {
+  return (
+    <div>
+      {items.map((item, index) => (
+        <button
+          style={{ display: 'block' }}
+          key={index}
+          onClick={() => onClick(item)}
+        >
+          {item}
+        </button>
+      ))}
+    </div>
+  );
+};
+```
+
+With nums & string will be correct even with next notation:
+
+```
+const List = <T extends {}>({ items, onClick }: ListProps<T>) => {
+
+```
+
+Do more, extend our props:
+
+```
+App:
+
+<List
+    items={[
+          { id: 1, fName: 'Bob' },
+          { id: 2, fName: 'Homer' },
+        ]}
+    onClick={(value) => console.log(value)}
+/>
+
+```
+
+```
+
+type ListProps<T> = {
+  items: T[];
+  onClick: (value: T) => void;
+};
+
+const List = <T extends { id: number }>({ items, onClick }: ListProps<T>) => {
+  return (
+    <div>
+      {items.map((item) => (
+        <button
+          style={{ display: 'block' }}
+          key={item.id}
+          onClick={() => onClick(item)}
+        >
+
+          // in this educational example we have a problem with obj,
+          // so just for ouput some value we will stringify them
+
+          {JSON.stringify(item)}
+
+        </button>
+      ))}
+    </div>
+  );
 };
 
 ```
