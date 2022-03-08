@@ -970,3 +970,54 @@ const RandomNumber = ({
   );
 };
 ```
+
+## Template literals & exclude
+
+Example: We want to note some position as props!
+
+Position can be on of:
+
+'left-center', 'left-top', 'left-bottom',
+
+'center', 'center-top', 'center-bottom,
+
+'right-center', 'right-top', 'right-bottom',
+
+1. we can just note all of them: `'left-center' | 'left-top' | ....`
+
+2. use template literals
+
+```
+App:
+
+<Toast position='left-bottom' />
+
+```
+
+```
+type HorizontalPosition = 'left' | 'center' | 'right';
+
+type VerticalPosition = 'top' | 'center' | 'bottom';
+
+type ToastProps = {
+  position: `${HorizontalPosition}-${VerticalPosition}`;
+};
+
+const Toast = ({ position }: ToastProps) => {
+  return <div>Toast notification position - {position}</div>;
+};
+
+```
+
+All is good, except one moment: 'center-center'
+
+So we should exclude 'center-center' and note 'center' as props!
+
+```
+type ToastProps = {
+  position:
+  | Exclude<`${HorizontalPosition}-${VerticalPosition}`, 'center-center'>
+  | 'center'
+};
+
+```
