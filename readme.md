@@ -917,3 +917,56 @@ const List = <T extends { id: number }>({ items, onClick }: ListProps<T>) => {
 };
 
 ```
+
+## Restricting Props
+
+```
+App:
+ <RandomNumber value={10} isPositive  /> // isPositive={true}
+```
+
+```
+type RandomNumberType = {
+  value: number;
+};
+
+type PositiveNumber = RandomNumberType & {
+  isPositive: boolean;
+  isNegative?: never;
+  isZero?: never;
+};
+
+type NegativeNumber = RandomNumberType & {
+  isNegative: boolean;
+  isPositive?: never;
+  isZero?: never;
+};
+type ZeroNumber = RandomNumberType & {
+  isZero: boolean;
+  isPositive?: never;
+  isNegative?: never;
+};
+
+type RandomNumberProps = PositiveNumber | NegativeNumber | ZeroNumber;
+
+```
+
+Now We will no be able write in App:
+
+`<RandomNumber value={10} isPositive isNegative isZero/>`
+
+```
+const RandomNumber = ({
+  value,
+  isPositive,
+  isNegative,
+  isZero,
+}: RandomNumberProps) => {
+  return (
+    <div>
+      {value} {isPositive && 'positive'} {isNegative && 'negative'}{' '}
+      {isZero && 'zero'}
+    </div>
+  );
+};
+```
