@@ -1,5 +1,7 @@
 # React TypeScript Reference
 
+[React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/docs/basic/setup)
+
 [FM Introduction link:](https://stevekinney.github.io/react-and-typescript/)
 
 ```
