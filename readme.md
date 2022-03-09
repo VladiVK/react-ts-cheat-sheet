@@ -1346,6 +1346,9 @@ const UserList: FC<UserListProps> = ({ users }) => {
 
 ```
 App:
+  .
+  .
+  .
 
 <List
         items={users}
