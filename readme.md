@@ -1210,3 +1210,39 @@ const Card: FC<CardProps> = ({ width, height, children, variant }) => {
   );
 };
 ```
+
+## Передаем функцию как props
+
+```
+App:
+
+ <Card
+    // other props ...
+
+    onclick={(n: number) => console.log(n)}
+   >
+```
+
+```
+type CardProps = {
+  // other types...
+  onclick: (num: number) => void;
+};
+
+const Card: FC<CardProps> = ({ width, height, children, variant, onclick }) => {
+  const [state, setState] = useState(0);
+  return (
+    <div
+      style={{
+        width,
+        height,
+        border: variant === CardVariant.outlined ? '1px solid grey' : 'none',
+        background: variant === CardVariant.primary ? 'lightgrey' : '',
+      }}
+      onClick={() => onclick(state)}
+    >
+      {children}
+    </div>
+  );
+};
+```
