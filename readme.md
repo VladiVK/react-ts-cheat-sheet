@@ -1345,5 +1345,26 @@ const UserList: FC<UserListProps> = ({ users }) => {
 Мы сможем одновременно отрисовывать любой список ( пользователи, посты...)
 
 ```
+App:
 
+<List
+        items={users}
+        renderItem={(user: IUser) => <User key={user.id} user={user} />}
+  />
+
+```
+
+```
+import React from 'react';
+import { IUser } from '../types/types';
+type ListProps<T> = {
+  items: T[];
+  // этот пропс - это компонент, который надо отрисовать
+  renderItem: (item: T) => React.ReactNode;
+};
+function List<T>(props: ListProps<T>) {
+  return <div>{props.items.map(props.renderItem)}</div>;
+}
+
+export default List;
 ```
