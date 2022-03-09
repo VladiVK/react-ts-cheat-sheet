@@ -1246,3 +1246,104 @@ const Card: FC<CardProps> = ({ width, height, children, variant, onclick }) => {
   );
 };
 ```
+
+## Получим список с сервера
+
+Внешний файл общих типов
+
+```
+export type IAddress = {
+  street: string;
+  city: string;
+  zipcode: string;
+};
+export type IUser = {
+  id: number;
+  name: string;
+  email: string;
+  address: IAddress;
+};
+```
+
+```
+const API = 'https://jsonplaceholder.typicode.com/users';
+
+const App = () => {
+
+  const [users, setUsers] = useState<IUser[]>([]);
+
+  useEffect(() => {
+    fetchUsers(API);
+  }, []);
+
+  async function fetchUsers(url: string) {
+    try {
+      const response = await axios.get<IUser[]>(url);
+      setUsers(response.data);
+    } catch (err) {
+      alert(err);
+    }
+  }
+
+  return (
+    <div>
+      <UserList users={users} />
+    </div>
+  );
+};
+```
+
+Компонет одного пользователя
+
+```
+import React, { FC } from 'react';
+import { IUser } from '../types/types';
+
+type UserProps = {
+  user: IUser;
+};
+const User: FC<UserProps> = ({ user }) => {
+  return (
+    <div
+      style={{
+        padding: '15px',
+        border: '1px solid grey',
+        margin: '1rem 0',
+      }}
+    >
+      {user.id} {user.name} lives in {user.address.city}, {user.address.street}{' '}
+      street.
+    </div>
+  );
+};
+```
+
+Список
+
+```
+import React, { FC } from 'react';
+import { IUser } from '../types/types';
+import User from './User';
+
+type UserListProps = {
+  users: IUser[];
+};
+
+const UserList: FC<UserListProps> = ({ users }) => {
+  return (
+    <div>
+      {users.map((user) => (
+        <User key={user.id} user={user} />
+      ))}
+    </div>
+  );
+};
+```
+
+## Универсальный компонет-список для разных типов
+
+Мы сможем одновременно отрисовывать любой список ( пользователи, посты...)
+
+```
+
+```
