@@ -8,7 +8,9 @@
 https://stevekinney.github.io/react-and-typescript/
 ```
 
-## 1. Props
+# Part 1. Intro
+
+## Props
 
 Помним, что пропсы - это объект!
 
@@ -1128,4 +1130,83 @@ const Text = <E extends React.ElementType = 'div'>({
 };
 
 export default Text;
+```
+
+# Part 2. Details
+
+## Передаем простые props
+
+Чтобы передавать `children` мы можем писать
+
+```
+type CardProps = {
+  width?: string;
+  height?: string;
+  children?: React.ReactChild | React.ReactNode;
+};
+```
+
+Либо что-то одно из вышеуказанного.
+
+Каждый раз указывать в типах `children` не очень удобно.
+
+Вместо этого можно использовать дженерик и просто деструктурировать:
+
+```
+type CardProps = {
+  width?: string;
+  height?: string;
+};
+
+const Card: React.FC< CardProps > = ({ width, height, children }) => {
+  return (
+    <div style={{ width, height, border: '1px solid grey' }}>{children}</div>
+  );
+};
+```
+
+## Передаем простые props & перечисление enum
+
+Импортируем перечисление enum как CardVariant
+
+```
+App:
+
+import Card, { CardVariant } from './components/Card';
+
+const App = () => {
+  return (
+    <div>
+      <Card height='250px' width='250px' variant={CardVariant.outlined}>
+        <button>button</button>
+      </Card>
+    </div>
+  );
+};
+```
+
+```
+export enum CardVariant {
+  outlined = 'outlined',
+  primary = 'primary',
+}
+type CardProps = {
+  width?: string;
+  height?: string;
+  variant: CardVariant;
+};
+const Card: FC<CardProps> = ({ width, height, children, variant }) => {
+  return (
+    <div
+      style={{
+        width,
+        height,
+        border: variant === CardVariant.outlined ? '1px solid grey' : 'none',
+        background: variant === CardVariant.primary ? 'lightgrey' : '',
+      }}
+    >
+      {children}
+    </div>
+  );
+};
 ```
