@@ -1053,3 +1053,79 @@ const CustomButton = ({ variant, children, ...rest }: CutomButtonProps) => (
 );
 export default CustomButton;
 ```
+
+## Extracting a Components Prop Types
+
+We can use type for our props from another component!
+
+This feature may be is not for actual using, but just for info...
+
+We had component `<Greet />` with types
+
+```
+type Greetprops = {
+  name: string;
+  messageCount?: number;
+  isLoggedIn: boolean;
+};
+```
+
+Let`s use it!
+
+```
+import Greet from '../Greet';
+
+const CustomComponent = (props: React.ComponentProps<typeof Greet>) => {
+  return <div>
+      {props.isLoggedIn}
+      {props.messageCount}
+      {props.name}
+  </div>;
+};
+```
+
+## Polymorphic Components
+
+It is an advanced concept.!!!
+
+We can use differnt specific children and types...
+
+```
+App:
+
+  <Text as='h1' size='l'>Heading</Text>
+
+  <Text as='p' size='m'>Paragraph</Text>
+
+  <Text as='label' htmlFor='forID' size='s' color='secondary'>
+    Label
+  </Text>
+
+```
+
+```
+import React from 'react';
+
+type TextOwnProps<E extends React.ElementType> = {
+  as?: E;
+  size?: 's' | 'm' | 'l';
+  color?: 'primary' | 'secondary';
+  children: React.ReactNode;
+};
+type TextProps<E extends React.ElementType> = TextOwnProps<E> &
+  Omit<React.ComponentProps<E>, keyof TextOwnProps<E>>;
+
+const Text = <E extends React.ElementType = 'div'>({
+  as,
+  size,
+  color,
+  children,
+}: TextProps<E>) => {
+  const Component = as || 'div';
+  return (
+    <Component className={`class-with-${size}-${color}`}>{children}</Component>
+  );
+};
+
+export default Text;
+```
