@@ -1023,3 +1023,33 @@ type ToastProps = {
 };
 
 ```
+
+## Wrapping HTML Elements
+
+```
+App:
+
+  <CustomButton variant='primary' onClick={() => console.log('Clicked!')}>
+        Primary Button
+  </CustomButton>
+
+```
+
+```
+
+type CutomButtonProps = {
+  variant: 'primary' | 'secondary';
+} & React.ComponentProps<'button'>; // we can note 'input' or any html element
+
+
+
+const CustomButton = ({ variant, children, ...rest }: CutomButtonProps) => (
+
+  // {...rest} has an onClick={} prop
+
+  <button className={`class-with-${variant}`} {...rest}>
+    {children}
+  </button>
+);
+export default CustomButton;
+```
