@@ -1475,3 +1475,23 @@ const EventsExample: FC = () => {
   );
 };
 ```
+
+### useRef hook
+
+```
+
+const inputRef = useRef<HTMLInputElement>(null);
+
+const buttonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    console.log(inputRef.current?.value);
+  };
+
+  return (
+    <>
+      <input type='text' ref={inputRef} placeholder='unmanageable' />
+
+      <button onClick={buttonHandler}>button</button>
+    </>
+  )
+
+```
