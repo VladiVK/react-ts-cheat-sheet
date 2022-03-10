@@ -1371,3 +1371,107 @@ function List<T>(props: ListProps<T>) {
 
 export default List;
 ```
+
+## Events. Работа с событиями
+
+```
+App:
+
+ <EventsExample />
+```
+
+Важно прописывать, например, не только `(e: React.ChangeEvent)`
+
+Но и `(e: React.ChangeEvent<HTMLInputElement>)`
+
+Иначе не будет доступа к свойствам инпута типа `value`
+
+```
+const EventsExample: FC = () => {
+
+  const [inputValue, setInputValue] = useState<string>('');
+
+  const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setInputValue(e.target.value);
+
+  const buttonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    console.log(inputValue);
+    setInputValue('');
+  };
+  return (
+    <div>
+      <input type='text' value={inputValue} onChange={inputHandler} />
+
+      <button onClick={buttonHandler}>button</button>
+    </div>
+  );
+};
+
+```
+
+Добавим drag-and-drop примеры
+
+```
+const EventsExample: FC = () => {
+
+  const [isDrag, setIsDrag] = useState<boolean>(false);
+
+
+  const dragHandler = (e: React.DragEvent<HTMLDivElement>) => {
+    // console.log('DRAG');
+  };
+
+  const dragWithPreventHandler = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDrag(true);
+  };
+
+  const leaveHandler = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDrag(false);
+  };
+
+  const dropHandler = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDrag(false);
+    console.log('drop');
+  };
+
+  return (
+    <div>
+
+      <div
+
+        draggable
+
+        // длится перетаскивание элемента или выделения текста.
+
+        onDrag={dragHandler}
+
+        style={{
+          width: '200px',
+          height: '200px',
+          background: 'lightgreen',
+          margin: '1rem 0',
+        }}
+      ></div>
+      <div
+        //элемент сброшен в допустимую зону сброса.
+        onDrop={dropHandler}
+
+        // перетаскиваемый элемент покидает допустимую цель сброса.
+        onDragLeave={leaveHandler}
+
+        // элемент перетаскивается над допустимой целью сброса каждые несколько сотен ///миллисекунд
+        onDragOver={dragWithPreventHandler}
+
+        style={{
+          width: '200px',
+          height: '200px',
+          background: isDrag ? 'coral' : 'lightgreen',
+        }}
+      ></div>
+    </div>
+  );
+};
+```
