@@ -1495,3 +1495,186 @@ const buttonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
   )
 
 ```
+
+### Typing with React router v6 version
+
+`App: `
+
+```
+
+import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
+import UsersPage from './components/UsersPage';
+import TodosPage from './components/TodosPage';
+import UserItemPage from './components/UserItemPage';
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <div>
+        <NavLink to='/users'>Go to Users</NavLink>
+        <br />
+        <NavLink to='/todos'>Go to Todos</NavLink>
+      </div>
+      <Routes>
+        <Route path={'/users'} element={<UsersPage />} />
+        <Route path={'/todos'} element={<TodosPage />} />
+        <Route path={'/users/:id'} element={<UserItemPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
+};
+
+```
+
+`UsersPage: `
+
+```
+import React, { FC, useState, useEffect } from 'react';
+import axios from 'axios';
+import { IUser } from '../types/types';
+import List from './List';
+import User from './User';
+import { useNavigate } from 'react-router-dom';
+
+const USERS_API = 'https://jsonplaceholder.typicode.com/users';
+
+const UsersPage: FC = () => {
+  const [users, setUsers] = useState<IUser[]>([]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchUsers(USERS_API);
+  }, []);
+
+  async function fetchUsers(url: string) {
+    try {
+      const response = await axios.get<IUser[]>(url);
+      setUsers(response.data);
+    } catch (err) {
+      alert(err);
+    }
+  }
+
+  return (
+    <List
+      items={users}
+      renderItem={(user: IUser) => (
+        <User
+          key={user.id}
+          user={user}
+          oncklick={(user) => navigate(`/users/${user.id}`)}
+        />
+      )}
+    />
+  );
+};
+```
+
+`TodosPage: `
+
+```
+import React, { FC, useState, useEffect } from 'react';
+import { ITodo } from '../types/types';
+import axios from 'axios';
+import List from './List';
+import Todo from './Todo';
+
+const TODOS_API = 'https://jsonplaceholder.typicode.com/todos?_limit=10';
+
+const TodosPage = () => {
+  const [todos, setTodos] = useState<ITodo[]>([]);
+
+  useEffect(() => {
+    fetchTodos(TODOS_API);
+  }, []);
+
+  async function fetchTodos(url: string) {
+    try {
+      const response = await axios.get<ITodo[]>(url);
+      setTodos(response.data);
+    } catch (err) {
+      alert(err);
+    }
+  }
+  return (
+    <List
+      items={todos}
+      renderItem={(todo: ITodo) => <Todo key={todo.id} todo={todo} />}
+    />
+  );
+};
+```
+
+`User: `
+
+```
+import React, { FC } from 'react';
+import { IUser } from '../types/types';
+
+type UserProps = {
+  user: IUser;
+  oncklick: (user: IUser) => void;
+};
+const User: FC<UserProps> = ({ user, oncklick }) => {
+  return (
+    <div
+      onClick={() => oncklick(user)}
+      style={{
+        padding: '15px',
+        border: '1px solid grey',
+        margin: '1rem 0',
+        cursor: 'pointer',
+      }}
+    >
+      {user.id} {user.name} lives in {user.address.city}, {user.address.street}{' '}
+      street.
+    </div>
+  );
+};
+```
+
+`UserItemPage: `
+
+```
+import React, { useEffect, useState } from 'react';
+import { IUser } from '../types/types';
+import axios from 'axios';
+
+import { useParams, useNavigate } from 'react-router-dom';
+
+type UserItemPageParams = {
+  id: string;
+};
+
+const UserItemPage = () => {
+  const [user, setUser] = useState<IUser | null>(null);
+
+  const params = useParams<UserItemPageParams>();
+  const navigate = useNavigate();
+  const goBack = () => navigate(-1);
+
+  useEffect(() => {
+    fetchUser(`https://jsonplaceholder.typicode.com/users/${params.id}`);
+  }, []);
+
+  async function fetchUser(url: string) {
+    try {
+      const response = await axios.get<IUser>(url);
+      setUser(response.data);
+    } catch (err) {
+      alert(err);
+    }
+  }
+  return (
+    <div>
+      <button onClick={goBack}>Go Back</button>
+      <h2>Name: {user?.name}</h2>
+      <h3>Email: {user?.email}</h3>
+    </div>
+  );
+};
+
+export default UserItemPage;
+
+```
